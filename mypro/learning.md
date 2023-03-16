@@ -220,3 +220,30 @@ print {
 
 ## Level 1
 
+**环境配置**
+
+主要谈谈自己在配置环境时遇到的问题及解决方法：
+
+1. pandas和numpy都是功能强大的python数据分析处理库，（所以我认为）仅需下载其中之一即可。
+2. 安装pytorch和cuda较麻烦（其实也不是太麻烦，但我莫名卡了一天时间）：
+    1. 对于torch库，先下载数据科学项目管理器anaconda，打开anaconda powershell prompt，打开pytorch官网下载界面，copy下方的一句命令，在命令行中paste即开始下载，*与网上的教程不同，现在下载pytorch好像都能下载，并不存在无法获取部分镜像资源包的情况*，***这里就卡了一会，因为几乎所有教程都在使用清华的镜像资源网站下载pytorch和torchvision***。
+    2. 对于cuda，按教程来就好了，但因为一开始安装cuda前我运行cnn1.py程序，发生了报错：
+   ```
+   Error loading "C:\ProgramData\Anaconda3\lib\site-packages\torch\lib\caffe2_nvrtc.dll" or one of its dependencies.
+   ```
+
+   ![python 报错](https://img-blog.csdnimg.cn/img_convert/d726a16fb313c905e2e02fe106a4f964.png)
+
+    CSDN上的说法有“pytorch版本问题，原来安装的是GPU版本，改为CPU版本后正常，conda install pytorch torchvision cpuonly -c pytorch”，然后我以为是没下载cuda导致的，但当时忘记了下载的是CPU版本的torch还是GPU版本的（（（
+
+    *还有一个小插曲：当时我发现缺失的是.dll文件，网上查询后我从git上扒了个dependencies插件，用于检测是否缺失.exe文件或.dll文件运行时所必须的文件，但研究了一番后发现不会用。。。*
+
+    于是下载CUDA后，我再次在VScode打开cnn1.py，发现还是报错，比较发现我的解释器选择好像有错。在VScode中甚至找不到python3.9.13('base')这一解释器，于是我打开Pycharm，在其中（强行）添加解释器。在pycharm中run了一遍，成功了。后来在VScode中run，发现也成功了，再看解释器，也变成了正确的解释器（这里不知道为什么是同步修改的）。所以我初步认为报错就是因为之前解释器选择错误。
+
+    **测试结果**
+    
+![测试结果1](G:\大学资料\微信截图\测试结果1.png "测试结果1")
+
+![测试结果2](G:\大学资料\微信截图\测试结果2.png )
+
+# Level 2
