@@ -120,6 +120,7 @@ class CrossEntropyLoss():
         
         return self.output
     def backward(self):
+        '''
         sum = 0
         i = 0
 
@@ -139,5 +140,6 @@ class CrossEntropyLoss():
                     break
         end = time.clock()
         print('cost time = %f s' % (end-begin))
+        '''
         return self.input.grad
         
