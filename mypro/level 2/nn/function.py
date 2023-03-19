@@ -9,6 +9,7 @@ from torch.nn.modules.utils import _pair
 from torch.nn.common_types import _size_2_t
 import torch.nn.functional as F
 import numpy as np
+import time
 import math
 
 class Conv2d(_ConvNd):
@@ -38,10 +39,11 @@ class Conv2d(_ConvNd):
         
     def conv2d(self, input:Tensor, kernel:Tensor, bias = 0, stride=1, padding=0):
         if padding > 0:
-            input = F.pad(input, (padding, padding, padding, padding))
+            input = F.pad(input, (padding, padding, padding, padding))    #每个维度扩充数量为padding
         bs, in_channels, input_h,input_w = input.shape
+        
         out_channel, in_channel,  kernel_h, kernel_w = kernel.shape
-
+        #输出通道、输入通道、卷积核高度、卷积核宽度
         if bias is None:
             bias = torch.zeros(out_channel)
 
@@ -53,15 +55,15 @@ class Conv2d(_ConvNd):
         output = torch.zeros(bs, out_channel, output_h, output_w)
 	
     # 不考虑性能
-        for ind in range(bs):
+        for ind in range(bs):  #根据一组样本的数量，遍历隐藏子层的次数
             for oc in range(out_channel):
-                for ic in range(in_channel):
+                for ic in range(in_channel):  #由输入、输出通道决定循环逻辑
                     for i in range(0, input_h - kernel_h + 1, stride):
-                        for j in range(0, input_w - kernel_w + 1, stride):
+                        for j in range(0, input_w - kernel_w + 1, stride):#卷积运算循环
                             region = input[ind, ic, i:i + kernel_h, j: j + kernel_w]
                         # 点乘相加
                             output[ind, oc, int(i / stride), int(j / stride)] += torch.sum(region * kernel[oc, ic])
-            output[ind, oc] += bias[oc]
+                output[ind, oc] += bias[oc]
 
         return output
     
@@ -118,6 +120,24 @@ class CrossEntropyLoss():
         
         return self.output
     def backward(self):
-        '''TODO'''
+        sum = 0
+        i = 0
+
+        begin = time.clock()
+        while True:
+            batch, label = random_get_data(mat, batch_size)
+            sig3, sig2, sig1 = cal_gradient(batch, label)
+            update(batch, sig1, sig2, sig3)
+            loss = cal_loss(batch, label)
+            sum += loss
+            i += 1
+            if i % 1000 == 0:
+                loss = sum/1000
+                sum = 0
+                print(loss)
+                if loss < 0.01:
+                    break
+        end = time.clock()
+        print('cost time = %f s' % (end-begin))
         return self.input.grad
         
